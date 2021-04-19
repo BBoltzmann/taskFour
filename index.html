@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch Api JSONPlaceholder</title>
+</head>
+
+<body>
+    <button id='getText'>Get Text</button>
+    <button id='getUsers'>Get Users</button>
+    <button id='getPosts'>Get API DATA</button>
+    <hr>
+    <div id="output"></div>
+    <form id="addPost">
+        <div>
+            <input type="number" id="userId" placeholder="userId"></input>
+        </div>
+        <div>
+            <input type="number" id="id" placeholder="id"></input>
+        </div>
+        <div>
+            <input type="text" id="title" placeholder="TITLE"></input>
+        </div>
+        <div>
+            <textarea type="text" id="body" placeholder="What is your request?"></textarea>
+        </div>
+        <input type="submit" value="Submit"></input>
+    </form>
+
+    <script>
+        document.getElementById('getText').addEventListener('click', getText)
+        document.getElementById('getUsers').addEventListener('click', getUsers)
+        document.getElementById('getPosts').addEventListener('click', getPosts)
+        document.getElementById('addPost').addEventListener('submit', addPost)
+
+        function getText() {
+            fetch('sample.txt')
+                .then((res) => {
+                    return res.text()
+                })
+                .then((data) => {
+                    document.getElementById('output').innerHTML = data
+                })
+                .catch((err) => {
+                    if (err) throw err
+                })
+
+        }
+
+        function getUsers() {
+            fetch('user.json')
+                .then((res) => {
+                    return res.json()
+                })
+                .then((data) => {
+                    let output = '<h2> Users </h2>'
+                    data.forEach((user) => {
+                        output += `
+                        <ul>
+                            <li> ID: ${user.id}</li>
+                            <li> Name: ${user.name}</li>
+                            <li> Number: ${user.number}</li>
+                        </ul>
+                        ` //back ticks not single quotes += to add on or append
+                    })
+                    document.getElementById('output').innerHTML = output
+                })
+                .catch((err) => {
+                    if (err) throw err
+                })
+
+
+        }
+
+        function getPosts() {
+            fetch('https://jsonplaceholder.typicode.com/posts')
+                .then((res) => {
+                    return res.json()
+                })
+                .then((data) => {
+                    let output = '<h2> Users Posts</h2>'
+                    data.forEach((post) => {
+                        output += `
+                        <div>
+                            <h3> ${post.userId} </h3>
+                            <h3> ${post.id} </h3>
+                            <h3> ${post.title} </h3>
+                            <p> ID: ${post.body}</p>
+                        </div>
+                        ` //back ticks not single quotes += to add on or append
+                    })
+                    document.getElementById('output').innerHTML = output
+                })
+                .catch((err) => {
+                    if (err) throw err
+                })
+
+
+        }
+
+        function addPost(e) {
+            e.preventDefault(); //prevent submitting default to a file
+            let userId = document.getElementById('userId').value
+            let id = document.getElementById('id').value
+            let title = document.getElementById('title').value
+            let body = document.getElementById('body').value
+            fetch('https://jsonplaceholder.typicode.com/posts', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json, text/plain, */*',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        usedId: usedId,
+                        id: id,
+                        title: title,
+                        body: body
+                    })
+                })
+                .then((res) => res.json())
+                .then((data) => console.log(data))
+        }
+    </script>
+
+</body>
+
+</html>
